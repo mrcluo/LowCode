@@ -11,9 +11,10 @@ const reqParser = require.context('./', false, /parser-[^.]+\.js/)
  */
 // 3. 模块分配
 const componentsName = req.keys()
+console.log(componentsName)
 const components = componentsName.reduce((components, module) => {
   const mod = req(module)
-
+  console.log(req, module, mod)
   components[mod.default.name] = mod.default
   return components
 }, {})

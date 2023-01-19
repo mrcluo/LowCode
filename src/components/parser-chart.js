@@ -21,6 +21,7 @@ export default {
         }
       },
       on: {
+        // 视图渲染后
         viewMounted: e => {
           store.dispatch('props/addWhere', {
             id: e._uid,

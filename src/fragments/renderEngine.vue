@@ -1,6 +1,7 @@
 <script>
 /**
  * 渲染根结点
+ * 引入动态挂载组件信息集合
  * 深度优先，递归找嵌套的子组件并传给startRender
  * startRender接收组件信息，从物料堆里捞对应组件
  * 最终返回完整的dom结点 渲染
@@ -16,7 +17,7 @@ export default {
         return {}
       }
     },
-    addNode: {
+    addNode: { // 用于拖拽组件逻辑中
       type: String,
       default: ''
     }
@@ -45,11 +46,14 @@ export default {
       if (section.children) {
         // 布局组件
         _children = this.renderChildren(h, section)
+        console.log(_children)
       }
       return this.startRender(h, section, _children)
     },
     // 子组件拆分
     renderChildren (h, section) {
+      // [].concat(section)不写也行
+      // [].concat([1,2,3])  [1,2,3]
       let _nodeArray = section.children || [].concat(section)
       // 在此可以拓展兄弟节点之间的逻辑
       return _nodeArray.map((n, i) => this.renderComponents(h, n, i))
@@ -58,9 +62,24 @@ export default {
     startRender (h, section, _children) {
       const _type = section.type
       // 去物料堆捞对应的组件 并 渲染
+      console.log(parsers)
       const renderMod = parsers[_type]
       // renderMod.render的写法 使得 物料堆里组件的配置逻辑需要有个render方法
+      // 不同组件不同作用域，继承物料，用当前的h, section, _children去执行物料里的render
       if (renderMod) {
+        console.log(section, _children)
+        /**
+         * 根据jsonSchema配置信息
+         * 渲染顺序-根据递归逻辑如下(渲染子组件的逻辑parser-xx.js配合xxx.vue通过slot实现)
+         * CInput      _children为null                                渲染CInput
+         * CButton     _children为null                                渲染CButton
+         * Container   _children为[CInput vNode, CButton vNode]       渲染Container以及其_children
+         * CChart      _children为null                                渲染CChart
+         * CInput      _children为null                                渲染CInput
+         * CTable      _children为null                                渲染CTable
+         * Container   _children为[CInput vNode, CTable vNode]        渲染Container以及其_children
+         * Container   _children为[jsonSchema.page.children所有vNode] 渲染Container以及其_children
+         */
         return renderMod.render.call(this, h, section, _children)
       }
       return null
@@ -74,6 +93,7 @@ export default {
     },
     // 拖拽组件松手
     handleDrop (event, vm) {
+      // 改变Json配置数据的内容，让其渲染新Json配置
       const _json = vm.jsonSchema
 
       if (_json && _json.type === 'Container') {
@@ -90,7 +110,7 @@ export default {
     this.init()
   },
   components: {
-    ...components,
+    ...components, // 此处是为了渲染container里的children组件
     ...parsers
   },
   render (h) {

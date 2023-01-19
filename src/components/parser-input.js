@@ -12,13 +12,13 @@ export default {
     const _this = this
     // 传递参数
     const _propsOn = {
-      nativeOn: {
+      nativeOn: { // 作用于组件，可以直接触发
         click: e => {
           e.stopPropagation()
           _this.$emit('pickType', 'cInput')
         }
       },
-      on: {
+      on: { // 给组件绑定事件，通过cInput里的emit触发
         viewMounted: e => {
           store.dispatch('props/addWhere', {
             id: e._uid,

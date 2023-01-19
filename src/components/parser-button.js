@@ -8,6 +8,7 @@ export default {
   },
 
   render (h, section, children) {
+    console.log(cButton)
     const _this = this
     // 传递参数
     const _propsOn = {
