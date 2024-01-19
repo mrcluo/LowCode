@@ -18,7 +18,7 @@ export default {
     // const payload = section.payload
 
     const _propsOn = {
-      nativeOn: { // 等于@clike.native
+      nativeOn: { // 等于@clike.native render函数里的自由属性
         click: e => {
           e.stopPropagation()
           /**
