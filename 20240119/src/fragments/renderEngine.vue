@@ -31,6 +31,10 @@ export default {
       return <div class="root">{this.renderComponents(h, _page)}</div>;
     },
     renderComponents(h, section) {
+      /**
+       * 深度优先遍历，类似洋葱模型
+       * 从外到内遍历，从内到外打印 => 最新渲染的是最末的子节点，依次往父级渲染
+       *  */
       let _children = null;
 
       if (section.children) {
