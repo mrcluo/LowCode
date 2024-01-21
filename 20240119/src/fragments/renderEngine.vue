@@ -41,6 +41,7 @@ export default {
         // 布局组件
         _children = this.renderChildren(h, section);
       }
+      // 去渲染最外层的Container组件，并且把一堆子组件放进去
       return this.startRender(h, section, _children);
     },
     renderChildren(h, section) {
